@@ -3,3 +3,4 @@
 *.docker.com
 *.docker.io
 *.mynavi.jp
+*.google.com
