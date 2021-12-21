@@ -1,0 +1,46 @@
+name: Manage the Route53 resolver DNS Firewall whitelists
+
+on:
+  push:
+    branches: 
+      - main
+      - stg
+      - "feature/**"
+    paths:
+      - "domainlist.txt"
+
+env:
+  AWS_WEB_IDENTITY_TOKEN_FILE: /tmp/awscreds
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/heads/feature')
+    timeout-minutes: 10
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - run: sleep 5 # there's still a race condition for now
+
+      - name: Configure AWS Credentials
+        run: |
+          echo AWS_WEB_IDENTITY_TOKEN_FILE=$AWS_WEB_IDENTITY_TOKEN_FILE >> $GITHUB_ENV
+          echo AWS_ROLE_ARN=${{ secrets.DEV_AWS_ROLE_ARN }} >> $GITHUB_ENV
+          echo AWS_DEFAULT_REGION=${{ secrets.DEV_AWS_REGION }} >> $GITHUB_ENV
+          echo AWS_REGION=${{ secrets.DEV_AWS_REGION }} >> $GITHUB_ENV
+
+          curl -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL" | jq -r '.value' > $AWS_WEB_IDENTITY_TOKEN_FILE
+
+      - name: Upload file to S3
+        env:
+          S3_UPLOAD_BUCKET: ${{ secrets.S3_UPLOAD_BUCKET }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          mv ./domainlist.txt ./domainlist-$IMAGE_TAG.txt
+          aws s3 cp ./domainlist-$IMAGE_TAG.txt s3://$S3_UPLOAD_BUCKET/ --quiet
+
