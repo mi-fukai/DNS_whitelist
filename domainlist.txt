@@ -1,5 +1,4 @@
 *.amazon.com
 *.amazonaws.com
 *.docker.com
-*.docker.io
 *.mynavi.jp
