@@ -42,8 +42,6 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
         run: |
           mv ./domainlist.txt ./domainlist-$IMAGE_TAG.txt
-          ls -l ./
-          echo s3://$S3_UPLOAD_BUCKET/
-          echo ./domainlist-$IMAGE_TAG.txt
-          aws s3 cp ./domainlist-$IMAGE_TAG.txt s3://$S3_UPLOAD_BUCKET/ --quiet
+          aws s3 cp domainlist-$IMAGE_TAG.txt s3://hrjoboffer-dev-dns-whitelist
 
+#           aws s3 cp domainlist-$IMAGE_TAG.txt s3://$S3_UPLOAD_BUCKET
