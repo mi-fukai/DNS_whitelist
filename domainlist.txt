@@ -6,3 +6,4 @@
 *.google.com
 *.hoge.com
 *.fuga.com
+*.piyo.com
