@@ -43,6 +43,7 @@ jobs:
         run: |
           mv ./domainlist.txt ./domainlist-$IMAGE_TAG.txt
           ls -l ./
-          aws s3 cp ./domainlist-$IMAGE_TAG.txt s3://$S3_UPLOAD_BUCKET/ --quiet
           echo s3://$S3_UPLOAD_BUCKET/
+          echo ./domainlist-$IMAGE_TAG.txt
+          aws s3 cp ./domainlist-$IMAGE_TAG.txt s3://$S3_UPLOAD_BUCKET/ --quiet
 
