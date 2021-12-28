@@ -1,3 +1,4 @@
 *.amazon.com
 *.amazonaws.com
 *.mynavi.jp
+*.example.com
